@@ -89,6 +89,9 @@ $stmt->execute();
         <?php endforeach ?>
     </select>
     <input name="adauga" type="submit" value="Adauga">
+    <div class="link">
+        <a id="edit" href="../print.php?tab=angajat">Exporteaza in Excel</a>
+    </div>
 </form>
 
 <table id="table">
