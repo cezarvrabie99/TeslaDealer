@@ -1,0 +1,123 @@
+body {
+    background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/38816/image-from-rawpixel-id-2044837-jpeg.jpg") fixed;
+    background-size: cover;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: 100;
+    font-size: 12px;
+    line-height: 30px;
+    color: #777;
+}
+
+h1{
+    text-align: center;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+#main, #prod, #table {
+    background: #F9F9F9;
+    padding: 25px;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    max-width: 300px;
+    width: 100%;
+    position: relative;
+    margin: 50px auto;
+    text-align: center;
+}
+
+#prod, #table{
+    max-width: 500px;
+}
+
+#table{
+    table-layout: auto;
+}
+
+td, th {
+    border: 1px solid black;
+}
+
+.login input, #prod input, #prod select{
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    border-width: 1px;
+    border-style: solid;
+    padding: 16px;
+    outline: 0;
+    font-family: inherit;
+    font-size: 16px;
+    margin: 16px auto;
+    border-radius: 4px;
+}
+
+#prod input{
+    padding: 12px;
+}
+
+.login input[type="text"],
+.login input[type="email"],
+.login input[type="password"] {
+    background: #fff;
+    border-color: #bbb;
+    color: #555;
+}
+
+.login input[type="text"]:focus,
+.login input[type="email"]:focus,
+.login input[type="password"]:focus {
+    border-color: #888;
+}
+
+.login input[type="submit"],
+#prod input[type="submit"]{
+    cursor: pointer;
+    width: 100%;
+    border: none;
+    background: #d55a19;
+    color: #FFF;
+    margin: 20px 0 10px;
+    padding: 12px;
+    font-size: 15px;
+}
+
+.login input[type="submit"]:hover,
+#prod input[type="submit"]:hover{
+    background: #71b393;
+    -webkit-transition: background 0.3s ease-in-out;
+    -moz-transition: background 0.3s ease-in-out;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.link a {
+    text-decoration: none;
+    outline: none;
+    transition: background-color .25s ease-out;
+    display: inline-block;
+    padding: 0 1px;
+    border-bottom: 0.2em solid #ccc;
+}
+
+.link a:hover {
+    background-color: #ccc;
+}
+
+#edit{
+    color: green;
+}
+
+#delete{
+    color: red;
+}
+
+#check{
+    background: url("../eye.png");
+}
