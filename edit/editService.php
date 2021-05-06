@@ -22,7 +22,7 @@ $sv = $stmt->fetch(PDO::FETCH_OBJ);
 
 if (isset($_POST['act'])){
     if (isVinValid($_POST['vin'])) {
-        if ($_POST['garantie'])
+        if (isset($_POST['garantie']))
             $garantie = 1;
         else
             $garantie = 0;

@@ -15,7 +15,7 @@ class PDF extends FPDF
 
     function Header()
     {
-        $this->Image("tesla_t.png", 2, 2, 27, 25);
+        $this->Image("../img/tesla_t.png", 2, 2, 27, 25);
         $this->SetFont('Arial','B',15);
         $this->Cell(30);
         $this->Cell($this->titleX,10, $this->title,0,0,'C');

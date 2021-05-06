@@ -71,6 +71,10 @@ $stmt->execute();
     </script>
 
     <input name="adauga" type="submit" value="Adauga">
+    <div class="link">
+        <a id="edit" href="../print.php?tab=piese"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
+        <a id="edit" href="../pdf/pdfPiese.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
+    </div>
 </form>
 
 <table id="table">

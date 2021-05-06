@@ -39,6 +39,10 @@ $stmt->execute();
 <form id="prod" method="post" autocomplete="off">
     <label><?php echo "Logat cu ".$_SESSION['user'];?></label>
     <a href="../logout.php">Logout</a>
+    <div class="link">
+        <a id="edit" href="../print.php?tab=logs"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
+        <a id="edit" href="../pdf/pdfLogs.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
+    </div>
 </form>
 
 <table id="table">

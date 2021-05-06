@@ -1,5 +1,5 @@
 body {
-    background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/38816/image-from-rawpixel-id-2044837-jpeg.jpg") fixed;
+    background: url("../img/background.jpg") fixed;
     background-size: cover;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: 100;
@@ -119,5 +119,5 @@ td, th {
 }
 
 #check{
-    background: url("../eye.png");
+    background: url("../img/eye.png");
 }

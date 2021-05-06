@@ -103,6 +103,10 @@ $stmt->execute();
     <label for="garantie">Garantie</label>
 
     <input name="adauga" type="submit" value="Adauga">
+    <div class="link">
+        <a id="edit" href="../print.php?tab=service"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
+        <a id="edit" href="../pdf/pdfService.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
+    </div>
 </form>
 
 <table id="table">

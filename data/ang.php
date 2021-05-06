@@ -70,8 +70,8 @@ $stmt->execute();
         $("#nav-placeholder").load("../nav.html");
     });
 </script>
-
-<form id="prod" method="post" autocomplete="off">
+<div id="prod">
+<form method="post" autocomplete="off">
     <label><?php echo "Logat cu ".$_SESSION['user'];?></label>
     <a href="../logout.php">Logout</a>
     <input name="numea" type="text" placeholder="Nume">
@@ -89,10 +89,18 @@ $stmt->execute();
         <?php endforeach ?>
     </select>
     <input name="adauga" type="submit" value="Adauga">
-    <div class="link">
-        <a id="edit" href="../print.php?tab=angajat">Exporteaza in Excel</a>
-    </div>
 </form>
+
+<form method="post" action="../import.php?tab=angajat" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".xls,.xlsx">
+    <input type="submit" value="Upload Excel">
+
+</form>
+    <div class="link">
+        <a id="edit" href="../print.php?tab=angajat"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
+        <a id="edit" href="../pdf/pdfAng.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
+    </div>
+</div>
 
 <table id="table">
     <tr>

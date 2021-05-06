@@ -96,6 +96,10 @@ $stmt->execute();
         <option>Selecteaza numele</option>
     </select>
     <input name="adauga" type="submit" value="Adauga">
+    <div class="link">
+        <a id="edit" href="../print.php?tab=vanzare"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
+        <a id="edit" href="../pdf/pdfVanzare.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
+    </div>
 </form>
 
 <table id="table">
@@ -131,6 +135,7 @@ $stmt->execute();
             <td><?php echo $vz->orav; ?></td>
 
             <td class="link">
+                <a id ="edit" href="../pdf/bill.php?codv=<?php echo $vz->codv ?>">Factura</a>
                 <a id="edit" href="../edit/editVanzare.php?codv=<?php echo $vz->codv ?>">Editeaza</a>
                 <a id="delete" href="vanzare.php?codv=<?php echo $vz->codv ?>&action=delete">Sterge</a>
             </td>
