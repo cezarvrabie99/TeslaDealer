@@ -27,20 +27,23 @@ if (isset($_POST['act'])){
                                    telefonc = :telefonc, emailc = :emailc, adresac = :adresac, localitate = :localitate, 
                    judet = :judet, tara = :tara WHERE codc = :codc');
         }
-        $stmt->execute(
-            array(
-                'numec' => $_POST['numec'],
-                'prenumec' => $_POST['prenumec'],
-                'cnp' => $_POST['cnp'],
-                'telefonc' => $_POST['telefonc'],
-                'emailc' => $_POST['emailc'],
-                'adresac' => $_POST['adresac'],
-                'localitate' => $_POST['localitate'],
-                'judet' => $_POST['judet'],
-                'tara' => $_POST['tara'],
-                'codc' => $_POST['codc']
-            )
+        $arr = array(
+            'numec' => $_POST['numec'],
+            'prenumec' => $_POST['prenumec'],
+            'cnp' => $_POST['cnp'],
+            'telefonc' => $_POST['telefonc'],
+            'emailc' => $_POST['emailc'],
+            'adresac' => $_POST['adresac'],
+            'localitate' => $_POST['localitate'],
+            'judet' => $_POST['judet'],
+            'tara' => $_POST['tara'],
+            'codc' => $_POST['codc']
         );
+        $stmt->execute($arr);
+        try {
+            logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+        } catch (Exception $e) {
+        }
         /*header("location:../data/client.php");*/
         if (isset($_SESSION['previous'])) {
             header('location:'. $_SESSION['previous']);

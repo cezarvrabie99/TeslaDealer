@@ -30,20 +30,23 @@ if (isset($_POST['act'])){
             $stmt = $connect->prepare('UPDATE service SET codc = :codc, numec = :numec, prenumec = :prenumec, 
                    vin = :vin, model = :model, codp = :codp, denp = :denp, stare = :stare, garantie = :garantie WHERE cods = :cods');
         }
-        $stmt->execute(
-            array(
-                'codc' => selectFrom("select codc from client where numec = '" . $_POST['conbon'] . "' and prenumec = '" . $_POST['conbop'] . "';", 1),
-                'numec' => $_POST['conbon'],
-                'prenumec' => $_POST['conbop'],
-                'vin' => $_POST['vin'],
-                'model' => getModel($_POST['vin']),
-                'codp' => $_POST['codp'],
-                'denp' => $_POST['prod'],
-                'stare' => $_POST['status'],
-                'garantie' => $garantie,
-                'cods' => $_POST['cods']
-            )
+        $arr = array(
+            'codc' => selectFrom("select codc from client where numec = '" . $_POST['conbon'] . "' and prenumec = '" . $_POST['conbop'] . "';", 1),
+            'numec' => $_POST['conbon'],
+            'prenumec' => $_POST['conbop'],
+            'vin' => $_POST['vin'],
+            'model' => getModel($_POST['vin']),
+            'codp' => $_POST['codp'],
+            'denp' => $_POST['prod'],
+            'stare' => $_POST['status'],
+            'garantie' => $garantie,
+            'cods' => $_POST['cods']
         );
+        $stmt->execute($arr);
+        try {
+            logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+        } catch (Exception $e) {
+        }
         if (isset($_SESSION['previous'])) {
             header('location:' . $_SESSION['previous']);
         }

@@ -2,6 +2,7 @@
 require "../connection.php";
 require "../validation.php";
 require "../header.php";
+require "../select.php";
 
 session_start();
 if (!isset($_SESSION['user'])){
@@ -64,21 +65,28 @@ if (isset($_POST['act'])){
                                   jante = :jante, interior = :interior, autopilot = :autopilot, data_fab = :data_fab, 
                       nr_usi = :nr_usi, tractiune = :tractiune, baterie = :baterie, preta = :preta, pretatva = :pretatva, 
                       stoc = :stoc WHERE vin = :vin');
-    $stmt->bindValue('model', $_POST['model']);
-    $stmt->bindValue('versiune', $_POST['versiune']);
-    $stmt->bindValue('culoare', $_POST['culoare']);
-    $stmt->bindValue('jante', $_POST['jante']);
-    $stmt->bindValue('interior', $_POST['interior']);
-    $stmt->bindValue('autopilot', $autopilot);
-    $stmt->bindValue('data_fab', $_POST['data_fab']);
-    $stmt->bindValue('nr_usi', $_POST['nr_usi']);
-    $stmt->bindValue('tractiune', $_POST['tractiune']);
-    $stmt->bindValue('baterie', $_POST['baterie']);
-    $stmt->bindValue('preta', $_POST['preta']);
-    $stmt->bindValue('pretatva', $_POST['pretatva']);
-    $stmt->bindValue('stoc', $_POST['stoc']);
-    $stmt->bindValue('vin', $_POST['vin']);
-    $stmt->execute();
+    $arr = array(
+        'model' => $_POST['model'],
+    'versiune' => $_POST['versiune'],
+    'culoare' => $_POST['culoare'],
+    'jante' => $_POST['jante'],
+    'interior' => $_POST['interior'],
+    'autopilot' => $autopilot,
+    'data_fab' => $_POST['data_fab'],
+    'nr_usi' => $_POST['nr_usi'],
+    'tractiune' => $_POST['tractiune'],
+    'baterie' => $_POST['baterie'],
+    'preta' => $_POST['preta'],
+    'pretatva' => $_POST['pretatva'],
+    'stoc' => $_POST['stoc'],
+    'vin' => $_POST['vin']
+    );
+    $stmt->execute($arr);
+
+    try {
+        logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+    } catch (Exception $e) {
+    }
     if (isset($_SESSION['previous'])) {
         header('Location: '. $_SESSION['previous']);
     }

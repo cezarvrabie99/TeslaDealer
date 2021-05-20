@@ -34,7 +34,6 @@ if (isNameValid($_POST['numea']) && isNameValid($_POST['prenumea']) && isCNPVali
             'judet' => $_POST['judet'],
             'tara' => $_POST['tara'],
             'codf' => selectFrom("select codf from functie where denf = '" . $_POST['functii'] . "';", 1)
-
         )
     );
     header("location:ang.php");
@@ -45,7 +44,8 @@ if (isNameValid($_POST['numea']) && isNameValid($_POST['prenumea']) && isCNPVali
 }
 
 if (isset($_GET['action']) && $_GET['action'] == 'delete'){
-    deleteFrom("angajat", "coda", $_GET['coda']);
+    deleteFrom("angajat", "coda", $_GET['coda'], $_SESSION['user']);
+    header("location:utilizatori.php");
 }
 if(!empty($connect))
     $stmt = $connect->prepare('SELECT * FROM angajat');
@@ -94,8 +94,8 @@ $stmt->execute();
 <form method="post" action="../import.php?tab=angajat" enctype="multipart/form-data">
     <input type="file" name="file" accept=".xls,.xlsx">
     <input type="submit" value="Upload Excel">
-
 </form>
+
     <div class="link">
         <a id="edit" href="../print.php?tab=angajat"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfAng.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>

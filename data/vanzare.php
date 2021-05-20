@@ -43,7 +43,8 @@ if (isset($_POST['adauga'])) {
 }
 
 if (isset($_GET['action']) && $_GET['action'] == 'delete'){
-    deleteFrom("vanzare", "codv", $_GET['codv']);
+    deleteFrom("vanzare", "codv", $_GET['codv'], $_SESSION['user']);
+    header("location:vanzare.php");
 }
 if(!empty($connect))
     $stmt = $connect->prepare('SELECT * FROM vanzare;');
@@ -70,7 +71,8 @@ $stmt->execute();
     });
 </script>
 
-<form id="prod" method="post" autocomplete="off">
+<div id="prod">
+<form method="post" autocomplete="off">
     <label><?php echo "Logat cu ".$_SESSION['user'];?></label>
     <a href="../logout.php">Logout</a>
     <select id="comboTip" name="tipprod">
@@ -96,11 +98,18 @@ $stmt->execute();
         <option>Selecteaza numele</option>
     </select>
     <input name="adauga" type="submit" value="Adauga">
+</form>
+
+    <form method="post" action="../import.php?tab=vanzare" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xls,.xlsx">
+        <input type="submit" value="Upload Excel">
+    </form>
+
     <div class="link">
         <a id="edit" href="../print.php?tab=vanzare"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfVanzare.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
-</form>
+</div>
 
 <table id="table">
     <tr>

@@ -25,14 +25,17 @@ if (isset($_POST['act'])){
             $stmt = $connect->prepare('UPDATE functie SET denf = :denf, salariubrut = :salariubrut, salariunet = :salariunet 
                                    WHERE codf = :codf');
         }
-        $stmt->execute(
-            array(
-                'denf' => $_POST['denf'],
-                'salariubrut' => $_POST['salariubrut'],
-                'salariunet' => $_POST['salariunet'],
-                'codf' => $_POST['codf']
-            )
+        $arr = array(
+            'denf' => $_POST['denf'],
+            'salariubrut' => $_POST['salariubrut'],
+            'salariunet' => $_POST['salariunet'],
+            'codf' => $_POST['codf']
         );
+        $stmt->execute($arr);
+        try {
+            log($_SESSION['user'], $connect, $stmt->queryString, $arr);
+        } catch (Exception $e) {
+        }
         /*header("location:../data/functii.php");*/
     if (isset($_SESSION['previous'])) {
         header('location:'. $_SESSION['previous']);

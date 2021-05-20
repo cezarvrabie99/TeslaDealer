@@ -30,19 +30,22 @@ if (isset($_POST['act'])){
 
         $stmt = $connect->prepare($sql);
     }
-    $stmt->execute(
-        array(
-            'tipprod' => $_POST['tipprod'],
-            'prod' => $_POST['prod'],
-            'cod' => $_POST['codp'],
-            'pret' => $_POST['pret'],
-            'prettva' => $_POST['prettva'],
-            'codc' => selectFrom("select codc from client where numec = '" . $_POST['conbon'] . "' and prenumec = '" . $_POST['conbop'] . "';", 1),
-            'numec' => $_POST['conbon'],
-            'prenumec' => $_POST['conbop'],
-            'codv' => $_POST['codv']
-        )
+    $arr = array(
+        'tipprod' => $_POST['tipprod'],
+        'prod' => $_POST['prod'],
+        'cod' => $_POST['codp'],
+        'pret' => $_POST['pret'],
+        'prettva' => $_POST['prettva'],
+        'codc' => selectFrom("select codc from client where numec = '" . $_POST['conbon'] . "' and prenumec = '" . $_POST['conbop'] . "';", 1),
+        'numec' => $_POST['conbon'],
+        'prenumec' => $_POST['conbop'],
+        'codv' => $_POST['codv']
     );
+    $stmt->execute($arr);
+    try {
+        logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+    } catch (Exception $e) {
+    }
     if (isset($_SESSION['previous'])) {
         header('Location: '. $_SESSION['previous']);
     }

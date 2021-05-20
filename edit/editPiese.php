@@ -25,14 +25,17 @@ if (isset($_POST['act'])){
         $stmt = $connect->prepare('UPDATE piese SET denp = :denp, pretp = :pretp, pretptva = :pretptva 
                                    WHERE codp = :codp');
     }
-    $stmt->execute(
-        array(
-            'denp' => $_POST['denp'],
-            'pretp' => $_POST['pretp'],
-            'pretptva' => $_POST['pretptva'],
-            'codp' => $_POST['codp']
-        )
+    $arr = array(
+        'denp' => $_POST['denp'],
+        'pretp' => $_POST['pretp'],
+        'pretptva' => $_POST['pretptva'],
+        'codp' => $_POST['codp']
     );
+    $stmt->execute($arr);
+    try {
+        logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+    } catch (Exception $e) {
+    }
     /*header("location:../ang.php");*/
     if (isset($_SESSION['previous'])) {
         header('location:'. $_SESSION['previous']);

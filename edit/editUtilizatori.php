@@ -25,14 +25,17 @@ if (isset($_POST['act'])){
             $stmt = $connect->prepare('UPDATE utilizatori SET username = :username, password = :password, codf = :codf 
                                    WHERE userid = :userid');
         }
-        $stmt->execute(
-            array(
-                'username' => $_POST['username'],
-                'password' => $_POST['password'],
-                'codf' => selectFrom("select codf from functie where denf = '" . $_POST['functii'] . "';", 1),
-                'userid' => $_POST['userid']
-            )
+        $arr = array(
+            'username' => $_POST['username'],
+            'password' => $_POST['password'],
+            'codf' => selectFrom("select codf from functie where denf = '" . $_POST['functii'] . "';", 1),
+            'userid' => $_POST['userid']
         );
+        $stmt->execute($arr);
+        try {
+            logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+        } catch (Exception $e) {
+        }
         if (isset($_SESSION['previous'])) {
             header('Location: '. $_SESSION['previous']);
         }

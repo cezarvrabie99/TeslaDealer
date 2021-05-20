@@ -13,6 +13,7 @@ if (!isset($_SESSION['user']) || $codlog != 4){
     header("location:../index.php");
 }
 if (isset($_POST['adauga'])) {
+    if (isSalaryValid($_POST['salariubrut'])) {
         if (!empty($connect)) {
             $stmt = $connect->prepare('INSERT INTO functie(denf, salariubrut, salariunet) VALUES (:denf, :salariubrut, :salariunet)');
         } else {
@@ -26,10 +27,15 @@ if (isset($_POST['adauga'])) {
             )
         );
         header("location:functii.php");
+    } else{
+        $message = "Date Gresite";
+        echo "<script type='text/javascript'>alert('$message');</script>";
+    }
 }
 
 if (isset($_GET['action']) && $_GET['action'] == 'delete'){
-    deleteFrom("functie", "codf", $_GET['codf']);
+    deleteFrom("functie", "codf", $_GET['codf'], $_SESSION['user']);
+    header("location:utilizatori.php");
 }
 if(!empty($connect))
     $stmt = $connect->prepare('SELECT * FROM functie');
@@ -55,7 +61,8 @@ $stmt->execute();
     });
 </script>
 
-<form id="prod" method="post" autocomplete="off">
+<div id="prod">
+<form method="post" autocomplete="off">
     <label><?php echo "Logat cu ".$_SESSION['user'];?></label>
     <a href="../logout.php">Logout</a>
     <input name="denf" type="text" placeholder="Denumire">
@@ -70,11 +77,18 @@ $stmt->execute();
     </script>
 
     <input name="adauga" type="submit" value="Adauga">
+</form>
+
+    <form method="post" action="../import.php?tab=functie" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xls,.xlsx">
+        <input type="submit" value="Upload Excel">
+    </form>
+
     <div class="link">
         <a id="edit" href="../print.php?tab=functie"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfFunctii.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
-</form>
+</div>
 
 <table id="table">
     <tr>

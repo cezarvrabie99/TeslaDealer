@@ -29,21 +29,24 @@ if (isset($_POST['act'])){
                                   adresaa = :adresaa, telefona = :telefona, emaila = :emaila, localitate = :localitate, 
                    judet = :judet, tara = :tara, codf = :codf WHERE coda = :coda');
         }
-        $stmt->execute(
-                array(
-                    'numea' => $_POST['numea'],
-                    'prenumea' => $_POST['prenumea'],
-                    'cnp' => $_POST['cnp'],
-                    'adresaa' => $_POST['adresaa'],
-                    'telefona' => $_POST['telefona'],
-                    'emaila' => $_POST['emaila'],
-                    'localitate' => $_POST['localitate'],
-                    'judet' => $_POST['judet'],
-                    'tara' => $_POST['tara'],
-                    'codf' => selectFrom("select codf from functie where denf = '" . $_POST['functii'] . "';", 1),
-                    'coda' => $_POST['coda']
-                )
+        $arr = array(
+            'numea' => $_POST['numea'],
+            'prenumea' => $_POST['prenumea'],
+            'cnp' => $_POST['cnp'],
+            'adresaa' => $_POST['adresaa'],
+            'telefona' => $_POST['telefona'],
+            'emaila' => $_POST['emaila'],
+            'localitate' => $_POST['localitate'],
+            'judet' => $_POST['judet'],
+            'tara' => $_POST['tara'],
+            'codf' => selectFrom("select codf from functie where denf = '" . $_POST['functii'] . "';", 1),
+            'coda' => $_POST['coda']
         );
+        $stmt->execute($arr);
+        try {
+            logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+        } catch (Exception $e) {
+        }
         /*header("location:".$prev);*/
         if (isset($_SESSION['previous'])) {
             header('Location: '. $_SESSION['previous']);

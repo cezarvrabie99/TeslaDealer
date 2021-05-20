@@ -116,12 +116,12 @@ function isSalaryValid($salary): bool
 
 /*echo "getModel: ".getModel("5YJ37EA4LF673789")."<br>";
 echo "isNameValid".isNameValid("Vrabie Cezar")."<br>";
-echo "isPhoneValid".isPhoneValid("0754276768")."<br>";
+echo "isPhoneValid".isPhoneValid("0785967542")."<br>";
 echo "isVinValid".isVinValid("5YJ3E7EA4LF673789")."<br>";
-echo "isEmailValid".isEmailValid("cezarvrabie@gmail.com")."<br>";
+echo "isEmailValid".isEmailValid("test@gmail.com")."<br>";
 echo "isJudetValid".isJudetValid("GL")."<br>";
 echo "isCountryCodeValid".isCountryCodeValid("ro")."<br>";
 echo "isSalaryValid".isSalaryValid("2000")."<br>";
-echo "getControlDigit".getControlDigit("199051317002")."<br>";
+echo "getControlDigit".getControlDigit("2990503248928")."<br>";
 echo "isDateValid".isDateValid("990513")."<br>";
-echo "isCNPValid".isCNPValid("1990513170027");*/
+echo "isCNPValid".isCNPValid("2990503248928");*/

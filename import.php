@@ -2,6 +2,7 @@
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 require ("connection.php");
 require "vendor/autoload.php";
+require "select.php";
 session_start();
 $codlog = selectFrom("select codf from utilizatori where username = '" . $_SESSION['user'] . "';", 1);
 
@@ -61,6 +62,13 @@ if (isset($_FILES['file'])){
                     }
                     $stmt = null;
                 }
+            $stm = $connect->prepare("INSERT INTO logs (username, actiune, comanda, datal, oral, codf) VALUES (:username, :actiune, :comanda, CURRENT_DATE, CURRENT_TIME, :codf)");
+            $stm->execute(array(
+                "username" => $_SESSION['user'],
+                "actiune" => "inserare Excel " . $tab,
+                "comanda" => $file_name_new,
+                "codf" => selectFrom("select codf from utilizatori where username = '" . $_SESSION['user'] . "';", 1)
+            ));
             if (isset($_SESSION['previous'])) {
                 header('Location: '. $_SESSION['previous']);
             }

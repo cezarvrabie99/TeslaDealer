@@ -50,6 +50,8 @@ $stmt->execute();
     <tr>
         <th>Cod Log</th>
         <th>Username</th>
+        <th>Actiune</th>
+        <th>Comanda</th>
         <th>Data</th>
         <th>Ora</th>
         <th>Cod functie</th>
@@ -58,9 +60,15 @@ $stmt->execute();
         <tr>
             <td><?php echo $log->codl; ?></td>
             <td><?php echo $log->username; ?></td>
+            <td><?php echo $log->actiune; ?></td>
+            <?php if (str_starts_with($log->actiune, "inserare Excel")): ?>
+            <td><a href="../download.php?file=<?php echo $log->comanda?>"><?php echo $log->comanda; ?></a></td>
+            <?php else: ?>
+            <td><?php echo $log->comanda; ?></td>
+            <?php endif; ?>
             <td><?php echo $log->datal; ?></td>
             <td><?php echo $log->oral; ?></td>
-            <td><?php echo $log->codf; ?></td>
+            <td><?php echo selectFrom("select denf from functie where codf = '" . $log->codf . "';", 1)?></td>
         </tr>
     <?php endwhile; ?>
 </table>
