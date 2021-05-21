@@ -1,6 +1,7 @@
 <?php
 require "connection.php";
 require "validation.php";
+require "select.php";
 
     if (isset($_POST["submit"])) {
         if (/*empty($_POST["nume"]) || */empty($_POST["user"]) || empty($_POST["parola"])) {
@@ -30,16 +31,17 @@ require "validation.php";
                 //header("location:ang.php");
                 switch ($result[0]){
                     case 4:
+                        logsConnect($_SESSION['user'], true);
                         header("location:data/ang.php");
                         break;
-                    case 6:
-                        echo "consilier";
-                        break;
                     case 7:
-                        echo "casier";
+                    case 6:
+                        logsConnect($_SESSION['user'], true);
+                        header("location:data/auto.php");
                         break;
                     case 1:
-                        echo "mecanic";
+                        logsConnect($_SESSION['user'], true);
+                        header("location:data/piese.php");
                         break;
                     default:
                         echo "neconfigurat";

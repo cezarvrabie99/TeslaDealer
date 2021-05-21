@@ -9,9 +9,11 @@ session_start();
 $codlog = selectFrom("select codf from utilizatori where username = '".$_SESSION['user']."'", 1);
 $_SESSION['previous'] = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-if (!isset($_SESSION['user']) || $codlog != 4){
+$allowed = array(4, 6, 7);
+if (!isset($_SESSION['user']) || !in_array($codlog, $allowed)){
     header("location:../index.php");
 }
+
 if (isset($_POST['adauga'])) {
     if (isNameValid($_POST['numec']) && isNameValid($_POST['prenumec']) && isCNPValid($_POST['cnp'])
         && isPhoneValid($_POST['telefonc']) && isEmailValid($_POST['emailc']) && isJudetValid($_POST['judet'])
@@ -22,20 +24,23 @@ if (isset($_POST['adauga'])) {
         } else {
             $stmt = null;
         }
-        $stmt->execute(
-            array(
-                'numec' => $_POST['numec'],
-                'prenumec' => $_POST['prenumec'],
-                'cnp' => $_POST['cnp'],
-                'adresac' => $_POST['adresac'],
-                'telefonc' => $_POST['telefonc'],
-                'emailc' => $_POST['emailc'],
-                'localitate' => $_POST['localitate'],
-                'judet' => $_POST['judet'],
-                'tara' => $_POST['tara']
+        $arr = array(
+            'numec' => $_POST['numec'],
+            'prenumec' => $_POST['prenumec'],
+            'cnp' => $_POST['cnp'],
+            'adresac' => $_POST['adresac'],
+            'telefonc' => $_POST['telefonc'],
+            'emailc' => $_POST['emailc'],
+            'localitate' => $_POST['localitate'],
+            'judet' => $_POST['judet'],
+            'tara' => $_POST['tara']
 
-            )
         );
+        $stmt->execute($arr);
+        try {
+            logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+        } catch (Exception $e) {
+        }
         header("location:client.php");
     } else {
         $message = "Date Gresite";
@@ -67,7 +72,11 @@ $stmt->execute();
 
 <script>
     $(function(){
-        $("#nav-placeholder").load("../nav.html");
+        const cod = '<?php echo $codlog; ?>';
+        if (cod == 4)
+            $("#nav-placeholder").load("../nav/manager.html");
+        else if (cod == 6 || cod == 7)
+            $("#nav-placeholder").load("../nav/consilier.html");
     });
 </script>
 
@@ -93,13 +102,33 @@ $stmt->execute();
         <input type="submit" value="Upload Excel">
     </form>
 
+    <?php if ($codlog != 6):?>
     <div class="link">
         <a id="edit" href="../print.php?tab=client"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfClient.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
+
+        <form method="post" autocomplete="off" action="chart.php?tab=client" enctype="multipart/form-data">
+            <select id="combo" name="data">
+                <option>Localitati</option>
+                <option>Judete</option>
+                <option>Tari</option>
+            </select>
+            <select id="combo" name="chart">
+                <option>PieChart</option>
+                <option>BarChart</option>
+                <option>ColumnChart</option>
+                <option>SteppedAreaChart</option>
+            </select>
+            <input name="gen" type="submit" value="Genereaza Chart">
+        </form>
+    <?php endif;?>
+
+    <input type='text' id='searchTable' placeholder='Cautare'>
 </div>
 
 <table id="table">
+    <thead>
     <tr>
         <th>Cod client</th>
         <th>Nume</th>
@@ -112,6 +141,8 @@ $stmt->execute();
         <th>Judet</th>
         <th>Tara</th>
     </tr>
+    </thead>
+    <tbody>
     <?php while ($cli = $stmt->fetch(PDO::FETCH_OBJ)): ?>
         <tr>
             <td><?php echo $cli->codc; ?></td>
@@ -125,12 +156,18 @@ $stmt->execute();
             <td><?php echo $cli->judet; ?></td>
             <td><?php echo $cli->tara; ?></td>
 
-            <td class="link">
-                <a id="edit" href="../edit/editClient.php?codc=<?php echo $cli->codc ?>">Editeaza</a>
-                <a id="delete" href="client.php?codc=<?php echo $cli->codc ?>&action=delete">Sterge</a>
-            </td>
+            <?php if ($codlog != 7):?>
+                <td class="link">
+                    <a id="edit" href="../edit/editClient.php?codc=<?php echo $cli->codc ?>">Editeaza</a>
+                    <a id="delete" href="client.php?codc=<?php echo $cli->codc ?>&action=delete">Sterge</a>
+                </td>
+            <?php endif ?>
         </tr>
     <?php endwhile; ?>
+    <tr class='notFound' hidden>
+        <td colspan='10'>Nu s-au gasit inregistrari!</td>
+    </tr>
+    </tbody>
 </table>
 </body>
 </html>

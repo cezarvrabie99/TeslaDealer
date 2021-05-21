@@ -19,13 +19,16 @@ if (isset($_POST['adauga'])) {
         } else {
             $stmt = null;
         }
-        $stmt->execute(
-            array(
-                'denf' => $_POST['denf'],
-                'salariubrut' => $_POST['salariubrut'],
-                'salariunet' => $_POST['salariunet']
-            )
+        $arr = array(
+            'denf' => $_POST['denf'],
+            'salariubrut' => $_POST['salariubrut'],
+            'salariunet' => $_POST['salariunet']
         );
+        $stmt->execute($arr);
+        try {
+            logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+        } catch (Exception $e) {
+        }
         header("location:functii.php");
     } else{
         $message = "Date Gresite";
@@ -57,7 +60,7 @@ $stmt->execute();
 
 <script>
     $(function(){
-        $("#nav-placeholder").load("../nav.html");
+        $("#nav-placeholder").load("../nav/manager.html");
     });
 </script>
 
@@ -88,15 +91,19 @@ $stmt->execute();
         <a id="edit" href="../print.php?tab=functie"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfFunctii.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
+    <input type='text' id='searchTable' placeholder='Cautare'>
 </div>
 
 <table id="table">
+    <thead>
     <tr>
         <th>Cod functie</th>
         <th>Denumire</th>
         <th>Salariul brut</th>
         <th>Salariul net</th>
     </tr>
+    </thead>
+    <tbody>
     <?php while ($fc = $stmt->fetch(PDO::FETCH_OBJ)): ?>
         <tr>
             <td><?php echo $fc->codf; ?></td>
@@ -110,6 +117,10 @@ $stmt->execute();
             </td>
         </tr>
     <?php endwhile; ?>
+    <tr class='notFound' hidden>
+        <td colspan='4'>Nu s-au gasit inregistrari!</td>
+    </tr>
+    </tbody>
 </table>
 </body>
 </html>

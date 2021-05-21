@@ -36,7 +36,7 @@
     text-transform:capitalize;
 }
 .sidenav a:hover{
-    color:yellow;
+    color:#d55a19;
 }
 @media only screen and (max-width:890px)
 {

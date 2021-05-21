@@ -22,20 +22,23 @@ if (isNameValid($_POST['numea']) && isNameValid($_POST['prenumea']) && isCNPVali
     } else {
         $stmt = null;
     }
-    $stmt->execute(
-        array(
-            'numea' => $_POST['numea'],
-            'prenumea' => $_POST['prenumea'],
-            'cnp' => $_POST['cnp'],
-            'adresaa' => $_POST['adresaa'],
-            'telefona' => $_POST['telefona'],
-            'emaila' => $_POST['emaila'],
-            'localitate' => $_POST['localitate'],
-            'judet' => $_POST['judet'],
-            'tara' => $_POST['tara'],
-            'codf' => selectFrom("select codf from functie where denf = '" . $_POST['functii'] . "';", 1)
-        )
+    $arr = array(
+        'numea' => $_POST['numea'],
+        'prenumea' => $_POST['prenumea'],
+        'cnp' => $_POST['cnp'],
+        'adresaa' => $_POST['adresaa'],
+        'telefona' => $_POST['telefona'],
+        'emaila' => $_POST['emaila'],
+        'localitate' => $_POST['localitate'],
+        'judet' => $_POST['judet'],
+        'tara' => $_POST['tara'],
+        'codf' => selectFrom("select codf from functie where denf = '" . $_POST['functii'] . "';", 1)
     );
+    $stmt->execute($arr);
+    try {
+        logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+    } catch (Exception $e) {
+    }
     header("location:ang.php");
 } else {
     $message = "Date Gresite";
@@ -67,7 +70,7 @@ $stmt->execute();
 
 <script>
     $(function(){
-        $("#nav-placeholder").load("../nav.html");
+        $("#nav-placeholder").load("../nav/manager.html");
     });
 </script>
 <div id="prod">
@@ -100,9 +103,28 @@ $stmt->execute();
         <a id="edit" href="../print.php?tab=angajat"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfAng.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
+
+    <form method="post" autocomplete="off" action="chart.php?tab=angajat" enctype="multipart/form-data">
+        <select id="combo" name="data">
+            <option>Localitati</option>
+            <option>Judete</option>
+            <option>Tari</option>
+            <option>Functii</option>
+        </select>
+        <select id="combo" name="chart">
+            <option>PieChart</option>
+            <option>BarChart</option>
+            <option>ColumnChart</option>
+            <option>SteppedAreaChart</option>
+        </select>
+        <input name="gen" type="submit" value="Genereaza Chart">
+    </form>
+
+    <input type='text' id='searchTable' placeholder='Cautare'>
 </div>
 
-<table id="table">
+<table id="main">
+    <thead>
     <tr>
         <th>Cod angajat</th>
         <th>Nume</th>
@@ -116,6 +138,8 @@ $stmt->execute();
         <th>Tara</th>
         <th>Functie</th>
     </tr>
+    </thead>
+    <tbody>
     <?php
     while ($ang = $stmt->fetch(PDO::FETCH_OBJ)) {
         ?>
@@ -140,6 +164,10 @@ $stmt->execute();
             </td>
         </tr>
     <?php } ?>
+    <tr class='notFound' hidden>
+        <td colspan='11'>Nu s-au gasit inregistrari!</td>
+    </tr>
+    </tbody>
 </table>
 </body>
 </html>

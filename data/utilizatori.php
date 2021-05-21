@@ -19,13 +19,16 @@ if ($_GET['password'] == $_GET['password2']) {
     } else {
         $stmt = null;
     }
-    $stmt->execute(
-        array(
-            'username' => $_POST['username'],
-            'password' => $_POST['password'],
-            'codf' => selectFrom("select codf from functie where denf = '" . $_POST['functii'] . "';", 1),
-        )
+    $arr = array(
+        'username' => $_POST['username'],
+        'password' => $_POST['password'],
+        'codf' => selectFrom("select codf from functie where denf = '" . $_POST['functii'] . "';", 1),
     );
+    $stmt->execute($arr);
+    try {
+        logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+    } catch (Exception $e) {
+    }
     header("location:utilizatori.php");
 } else {
     $message = "Parolele nu se potrivesc!";
@@ -57,7 +60,7 @@ $stmt->execute();
 
 <script>
     $(function(){
-        $("#nav-placeholder").load("../nav.html");
+        $("#nav-placeholder").load("../nav/manager.html");
     });
 </script>
 
@@ -96,15 +99,33 @@ $stmt->execute();
         <a id="edit" href="../print.php?tab=utilizatori"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfUtilizatori.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
+
+    <form method="post" autocomplete="off" action="chart.php?tab=utilizatori" enctype="multipart/form-data">
+        <select id="combo" name="data">
+            <option>Functii</option>
+        </select>
+        <select id="combo" name="chart">
+            <option>PieChart</option>
+            <option>BarChart</option>
+            <option>ColumnChart</option>
+            <option>SteppedAreaChart</option>
+        </select>
+        <input name="gen" type="submit" value="Genereaza Chart">
+    </form>
+
+    <input type='text' id='searchTable' placeholder='Cautare'>
 </div>
 
 <table id="table">
+    <thead>
     <tr>
         <th>Cod utilizator</th>
         <th>Username</th>
         <th>Parola</th>
         <th>Functie</th>
     </tr>
+    </thead>
+    <tbody>
     <?php while ($usr = $stmt->fetch(PDO::FETCH_OBJ)): ?>
         <tr>
             <td><?php echo $usr->userid; ?></td>
@@ -118,6 +139,10 @@ $stmt->execute();
             </td>
         </tr>
     <?php endwhile; ?>
+    <tr class='notFound' hidden>
+        <td colspan='4'>Nu s-au gasit inregistrari!</td>
+    </tr>
+    </tbody>
 </table>
 </body>
 </html>

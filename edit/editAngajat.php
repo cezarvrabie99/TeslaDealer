@@ -11,6 +11,10 @@ $codlog = selectFrom("select codf from utilizatori where username = '".$_SESSION
 if (!isset($_SESSION['user']) || $codlog != 4){
     header("location:../index.php");
 }
+if (!isset($_GET['coda'])){
+    header("location:../data/ang.php");
+}
+
 if (!empty($connect)) {
     $stmt = $connect->prepare('SELECT * FROM angajat WHERE coda = :coda');
 } else

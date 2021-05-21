@@ -1,5 +1,7 @@
 <?php
+require "select.php";
 session_start();
+logsConnect($_SESSION['user'], false);
 session_destroy();
 if (isset($_COOKIE['user']) and isset($_COOKIE['parola'])) {
     $email = $_COOKIE['user'];

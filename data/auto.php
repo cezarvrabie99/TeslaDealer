@@ -9,9 +9,11 @@ session_start();
 $codlog = selectFrom("select codf from utilizatori where username = '".$_SESSION['user']."'", 1);
 $_SESSION['previous'] = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-if (!isset($_SESSION['user']) || $codlog != 4){
+$allowed = array(4, 6, 7);
+if (!isset($_SESSION['user']) || !in_array($codlog, $allowed)){
     header("location:../index.php");
 }
+
 if (isset($_POST['adauga'])) {
     if (isVINValid($_POST['vin']) && getModel($_POST['vin']) == $_POST['model'] && $_POST['stoc'] >= 0) {
         if ($_POST['$autopilot'])
@@ -25,24 +27,27 @@ if (isset($_POST['adauga'])) {
         } else {
             $stmt = null;
         }
-        $stmt->execute(
-            array(
-                'vin' => $_POST['vin'],
-                'model' => $_POST['model'],
-                'versiune' => $_POST['versiune'],
-                'culoare' => $_POST['culoare'],
-                'jante' => $_POST['jante'],
-                'interior' => $_POST['interior'],
-                'autopilot' => $autopilot,
-                'data_fab' => $_POST['data_fab'],
-                'nr_usi' => $_POST['nr_usi'],
-                'tractiune' => $_POST['tractiune'],
-                'baterie' => $_POST['baterie'],
-                'preta' => $_POST['preta'],
-                'pretatva' => $_POST['pretatva'],
-                'stoc' => $_POST['stoc']
-            )
+        $arr = array(
+            'vin' => $_POST['vin'],
+            'model' => $_POST['model'],
+            'versiune' => $_POST['versiune'],
+            'culoare' => $_POST['culoare'],
+            'jante' => $_POST['jante'],
+            'interior' => $_POST['interior'],
+            'autopilot' => $autopilot,
+            'data_fab' => $_POST['data_fab'],
+            'nr_usi' => $_POST['nr_usi'],
+            'tractiune' => $_POST['tractiune'],
+            'baterie' => $_POST['baterie'],
+            'preta' => $_POST['preta'],
+            'pretatva' => $_POST['pretatva'],
+            'stoc' => $_POST['stoc']
         );
+        $stmt->execute($arr);
+        try {
+            logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+        } catch (Exception $e) {
+        }
         header("location:auto.php");
     } else {
         $message = "Date Gresite";
@@ -75,7 +80,11 @@ $stmt->execute();
 
 <script>
     $(function(){
-        $("#nav-placeholder").load("../nav.html");
+        const cod = '<?php echo $codlog; ?>';
+        if (cod == 4)
+            $("#nav-placeholder").load("../nav/manager.html");
+        else if (cod == 6 || cod == 7)
+            $("#nav-placeholder").load("../nav/consilier.html");
     });
 </script>
 
@@ -147,13 +156,39 @@ $stmt->execute();
         <input type="submit" value="Upload Excel">
     </form>
 
+    <?php if ($codlog != 6):?>
     <div class="link">
         <a id="edit" href="../print.php?tab=autoturism"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfAuto.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
+
+        <form method="post" autocomplete="off" action="chart.php?tab=autoturism" enctype="multipart/form-data">
+            <select id="combo" name="data">
+                <option>Modele</option>
+                <option>Versiuni</option>
+                <option>Culori</option>
+                <option>Jante</option>
+                <option>Interior</option>
+                <option>Autopilot</option>
+                <option>Nr. Usi</option>
+                <option>Tractiune</option>
+                <option>Baterii</option>
+            </select>
+            <select id="combo" name="chart">
+                <option>PieChart</option>
+                <option>BarChart</option>
+                <option>ColumnChart</option>
+                <option>SteppedAreaChart</option>
+            </select>
+            <input name="gen" type="submit" value="Genereaza Chart">
+        </form>
+    <?php endif;?>
+
+    <input type='text' id='searchTable' placeholder='Cautare'>
 </div>
 
 <table id="table">
+    <thead>
     <tr>
         <th>VIN</th>
         <th>Model</th>
@@ -170,6 +205,8 @@ $stmt->execute();
         <th>Pret(cu TVA)</th>
         <th>Stoc</th>
     </tr>
+    </thead>
+    <tbody>
     <?php
     while ($auto = $stmt->fetch(PDO::FETCH_OBJ)) {
         ?>
@@ -192,14 +229,19 @@ $stmt->execute();
             <td><?php echo $auto->preta; ?></td>
             <td><?php echo $auto->pretatva; ?></td>
             <td><?php echo $auto->stoc; ?></td>
-            <td class="link">
-                <?php if ($_SESSION['user'] == 'manager'):?> <!--pentru privilegii-->
-                    <a id="edit" href="../edit/editAutoturism.php?vin=<?php echo $auto->vin ?>">Editeaza</a>
+
+                <?php if ($codlog != 7):?>
+                    <td class="link">
+                        <a id="edit" href="../edit/editAutoturism.php?vin=<?php echo $auto->vin ?>">Editeaza</a>
+                        <a id="delete" href="ang.php?vin=<?php echo $auto->vin ?>&action=delete">Sterge</a>
+                    </td>
                 <?php endif ?>
-                <a id="delete" href="ang.php?vin=<?php echo $auto->vin ?>&action=delete">Sterge</a>
-            </td>
         </tr>
     <?php } ?>
+    <tr class='notFound' hidden>
+        <td colspan='14'>Nu s-au gasit inregistrari!</td>
+    </tr>
+    </tbody>
 </table>
 </body>
 </html>

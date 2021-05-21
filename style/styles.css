@@ -78,7 +78,7 @@ td, th {
 }
 
 .login input[type="submit"],
-#prod input[type="submit"]{
+#prod input[type="submit"], #down{
     cursor: pointer;
     width: 100%;
     border: none;
@@ -120,4 +120,11 @@ td, th {
 
 #check{
     background: url("../img/eye.png");
+}
+
+#down{
+    max-width: 200px;
+    display: block;
+    margin: 0 auto;
+    text-align: center;
 }

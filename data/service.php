@@ -9,9 +9,11 @@ session_start();
 $codlog = selectFrom("select codf from utilizatori where username = '".$_SESSION['user']."'", 1);
 $_SESSION['previous'] = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-if (!isset($_SESSION['user']) || $codlog != 4){
+$allowed = array(4, 6, 7, 1);
+if (!isset($_SESSION['user']) || !in_array($codlog, $allowed)){
     header("location:../index.php");
 }
+
 if (isset($_POST['adauga'])) {
     if (isVinValid($_POST['vin'])) {
         if ($_POST['garantie'])
@@ -26,20 +28,23 @@ VALUES (:codc, :numec, :prenumec, :vin, :model, :codp, :denp, :angajat, :stare, 
         } else {
             $stmt = null;
         }
-        $stmt->execute(
-            array(
-                'codc' => selectFrom("select codc from client where numec = '" . $_POST['conbon'] . "' and prenumec = '" . $_POST['conbop'] . "';", 1),
-                'numec' => $_POST['conbon'],
-                'prenumec' => $_POST['conbop'],
-                'vin' => $_POST['vin'],
-                'model' => getModel($_POST['vin']),
-                'codp' => $_POST['codp'],
-                'denp' => $_POST['prod'],
-                'angajat' => $_SESSION['user'],
-                'stare' => $_POST['status'],
-                'garantie' => $garantie
-            )
+        $arr = array(
+            'codc' => selectFrom("select codc from client where numec = '" . $_POST['conbon'] . "' and prenumec = '" . $_POST['conbop'] . "';", 1),
+            'numec' => $_POST['conbon'],
+            'prenumec' => $_POST['conbop'],
+            'vin' => $_POST['vin'],
+            'model' => getModel($_POST['vin']),
+            'codp' => $_POST['codp'],
+            'denp' => $_POST['prod'],
+            'angajat' => $_SESSION['user'],
+            'stare' => $_POST['status'],
+            'garantie' => $garantie
         );
+        $stmt->execute($arr);
+        try {
+            logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+        } catch (Exception $e) {
+        }
         header("location:service.php");
     } else{
         $message = "Date Gresite";
@@ -72,7 +77,13 @@ $stmt->execute();
 
 <script>
     $(function(){
-        $("#nav-placeholder").load("../nav.html");
+        const cod = '<?php echo $codlog; ?>';
+        if (cod == 4)
+            $("#nav-placeholder").load("../nav/manager.html");
+        else if (cod == 6 || cod == 7)
+            $("#nav-placeholder").load("../nav/consilier.html");
+        else if (cod == 1)
+            $("#nav-placeholder").load("../nav/mecanic.html");
     });
 </script>
 
@@ -111,13 +122,35 @@ $stmt->execute();
         <input type="submit" value="Upload Excel">
     </form>
 
+    <?php if ($codlog != 6 && $codlog != 1):?>
     <div class="link">
         <a id="edit" href="../print.php?tab=service"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfService.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
+
+        <form method="post" autocomplete="off" action="chart.php?tab=service" enctype="multipart/form-data">
+            <select id="combo" name="data">
+                <option>Modele</option>
+                <option>Produse</option>
+                <option>Angajati</option>
+                <option>Stari</option>
+                <option>Garantie</option>
+            </select>
+            <select id="combo" name="chart">
+                <option>PieChart</option>
+                <option>BarChart</option>
+                <option>ColumnChart</option>
+                <option>SteppedAreaChart</option>
+            </select>
+            <input name="gen" type="submit" value="Genereaza Chart">
+        </form>
+    <?php endif;?>
+
+    <input type='text' id='searchTable' placeholder='Cautare'>
 </div>
 
 <table id="table">
+    <thead>
     <tr>
         <th>Cod service</th>
         <th>Cod client</th>
@@ -133,6 +166,8 @@ $stmt->execute();
         <th>Data</th>
         <th>Ora</th>
     </tr>
+    </thead>
+    <tbody>
     <?php while ($sv = $stmt->fetch(PDO::FETCH_OBJ)): ?>
         <tr>
             <td><?php echo $sv->cods; ?></td>
@@ -153,12 +188,20 @@ $stmt->execute();
             <td><?php echo $sv->datas; ?></td>
             <td><?php echo $sv->oras; ?></td>
 
+            <?php if ($codlog != 7):?>
             <td class="link">
                 <a id="edit" href="../edit/editService.php?cods=<?php echo $sv->cods ?>">Editeaza</a>
-                <a id="delete" href="service.php?cods=<?php echo $sv->cods ?>&action=delete">Sterge</a>
+                <?php if ($codlog != 1):?>
+                    <a id="delete" href="service.php?cods=<?php echo $sv->cods ?>&action=delete">Sterge</a>
+                <?php endif;?>
             </td>
+            <?php endif?>
         </tr>
     <?php endwhile; ?>
+    <tr class='notFound' hidden>
+        <td colspan='13'>Nu s-au gasit inregistrari!</td>
+    </tr>
+    </tbody>
 </table>
 </body>
 </html>

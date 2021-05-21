@@ -9,9 +9,11 @@ session_start();
 $codlog = selectFrom("select codf from utilizatori where username = '".$_SESSION['user']."'", 1);
 $_SESSION['previous'] = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-if (!isset($_SESSION['user']) || $codlog != 4){
+$allowed = array(4, 6, 7);
+if (!isset($_SESSION['user']) || !in_array($codlog, $allowed)){
     header("location:../index.php");
 }
+
 if (isset($_POST['adauga'])) {
         if (!empty($connect)) {
             if ($_POST['tipprod'] == "Piese")
@@ -26,19 +28,22 @@ if (isset($_POST['adauga'])) {
         } else {
             $stmt = null;
         }
-        $stmt->execute(
-            array(
-                'tipprod' => $_POST['tipprod'],
-                'prod' => $_POST['prod'],
-                'cod' => $_POST['codp'],
-                'pret' => $_POST['pret'],
-                'prettva' => $_POST['prettva'],
-                'codc' => selectFrom("select codc from client where numec = '" . $_POST['conbon'] . "' and prenumec = '" . $_POST['conbop'] . "';", 1),
-                'numec' => $_POST['conbon'],
-                'prenumec' => $_POST['conbop'],
-                'angajat' => $_SESSION['user']
-            )
+        $arr = array(
+            'tipprod' => $_POST['tipprod'],
+            'prod' => $_POST['prod'],
+            'cod' => $_POST['codp'],
+            'pret' => $_POST['pret'],
+            'prettva' => $_POST['prettva'],
+            'codc' => selectFrom("select codc from client where numec = '" . $_POST['conbon'] . "' and prenumec = '" . $_POST['conbop'] . "';", 1),
+            'numec' => $_POST['conbon'],
+            'prenumec' => $_POST['conbop'],
+            'angajat' => $_SESSION['user']
         );
+        $stmt->execute($arr);
+        try {
+            logs($_SESSION['user'], $connect, $stmt->queryString, $arr);
+        } catch (Exception $e) {
+        }
         header("location:vanzare.php");
 }
 
@@ -67,7 +72,11 @@ $stmt->execute();
 
 <script>
     $(function(){
-        $("#nav-placeholder").load("../nav.html");
+        const cod = '<?php echo $codlog; ?>';
+        if (cod == 4)
+            $("#nav-placeholder").load("../nav/manager.html");
+        else if (cod == 6 || cod == 7)
+            $("#nav-placeholder").load("../nav/consilier.html");
     });
 </script>
 
@@ -105,13 +114,33 @@ $stmt->execute();
         <input type="submit" value="Upload Excel">
     </form>
 
+    <?php if ($codlog != 6):?>
     <div class="link">
         <a id="edit" href="../print.php?tab=vanzare"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfVanzare.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
+
+    <form method="post" autocomplete="off" action="chart.php?tab=vanzare" enctype="multipart/form-data">
+        <select id="combo" name="data">
+            <option>Tip produse</option>
+            <option>Produse</option>
+            <option>Angajati</option>
+        </select>
+        <select id="combo" name="chart">
+            <option>PieChart</option>
+            <option>BarChart</option>
+            <option>ColumnChart</option>
+            <option>SteppedAreaChart</option>
+        </select>
+        <input name="gen" type="submit" value="Genereaza Chart">
+    </form>
+    <?php endif;?>
+
+    <input type='text' id='searchTable' placeholder='Cautare'>
 </div>
 
 <table id="table">
+    <thead>
     <tr>
         <th>Cod vanzare</th>
         <th>Tip Produs</th>
@@ -127,6 +156,8 @@ $stmt->execute();
         <th>Data</th>
         <th>Ora</th>
     </tr>
+    </thead>
+    <tbody>
     <?php while ($vz = $stmt->fetch(PDO::FETCH_OBJ)): ?>
         <tr>
             <td><?php echo $vz->codv; ?></td>
@@ -145,11 +176,17 @@ $stmt->execute();
 
             <td class="link">
                 <a id ="edit" href="../pdf/bill.php?codv=<?php echo $vz->codv ?>">Factura</a>
-                <a id="edit" href="../edit/editVanzare.php?codv=<?php echo $vz->codv ?>">Editeaza</a>
-                <a id="delete" href="vanzare.php?codv=<?php echo $vz->codv ?>&action=delete">Sterge</a>
+                <?php if ($codlog != 7):?>
+                    <a id="edit" href="../edit/editVanzare.php?codv=<?php echo $vz->codv ?>">Editeaza</a>
+                    <a id="delete" href="vanzare.php?codv=<?php echo $vz->codv ?>&action=delete">Sterge</a>
+                <?php endif ?>
             </td>
         </tr>
     <?php endwhile; ?>
+    <tr class='notFound' hidden>
+        <td colspan='13'>Nu s-au gasit inregistrari!</td>
+    </tr>
+    </tbody>
 </table>
 </body>
 </html>
