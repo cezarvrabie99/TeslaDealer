@@ -17,7 +17,7 @@ require "header.php";
         <input name="user" id="user" type="text" placeholder="Introduceti username-ul">
         <input name="parola" id="parola" type="password" placeholder="Introduceti parola">
 
-        <input class="submit" type="submit" name="submit">
+        <input class="submit" type="submit" name="submit" value="Log In">
     </div>
 
     <input name="remember" id="remember" type="checkbox" value="Tine minte username-ul">

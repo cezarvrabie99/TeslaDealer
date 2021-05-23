@@ -125,7 +125,7 @@ $stmt->execute();
 
 <table id="main">
     <thead>
-    <tr>
+    <tr class="tm-tr-header">
         <th>Cod angajat</th>
         <th>Nume</th>
         <th>Prenume</th>
