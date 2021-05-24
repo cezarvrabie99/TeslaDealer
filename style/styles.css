@@ -37,7 +37,9 @@ h1{
     max-width: 500px;
 }
 
-
+td, th {
+    border: 1px solid black;
+}
 
 .login input, #prod input, #prod select{
     box-sizing: border-box;

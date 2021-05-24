@@ -69,9 +69,10 @@ $stmt->execute();
 </script>
 
 <div id="prod">
-<form method="post" autocomplete="off">
-    <label><?php echo "Logat cu ".$_SESSION['user'] . $codlog;?></label>
+    <label><?php echo "Logat cu ".$_SESSION['user'];?></label>
     <a href="../logout.php">Logout</a>
+    <?php if ($codlog != 1): ?>
+<form method="post" autocomplete="off">
     <input name="codp" type="text" placeholder="Cod piesa">
     <input name="denp" type="text" placeholder="Denumire">
     <input name="pretp" id="pretp" type="number" placeholder="Pret(fara TVA)" onkeyup="addVat()">
@@ -86,16 +87,22 @@ $stmt->execute();
     <input name="adauga" type="submit" value="Adauga">
 </form>
 
+    <hr>
+
     <form method="post" action="../import.php?tab=piese" enctype="multipart/form-data">
         <input type="file" name="file" accept=".xls,.xlsx">
         <input type="submit" value="Upload Excel">
     </form>
 
+    <hr>
     <?php if ($codlog != 6 && $codlog != 1):?>
     <div class="link">
         <a id="edit" href="../print.php?tab=piese"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfPiese.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
+
+        <hr>
+    <?php endif;?>
     <?php endif;?>
     <input type='text' id='searchTable' placeholder='Cautare'>
 </div>

@@ -90,15 +90,21 @@ $stmt->execute();
     <input name="adauga" type="submit" value="Adauga">
 </form>
 
+    <hr>
+
     <form method="post" action="../import.php?tab=utilizatori" enctype="multipart/form-data">
         <input type="file" name="file" accept=".xls,.xlsx">
         <input type="submit" value="Upload Excel">
     </form>
 
+    <hr>
+
     <div class="link">
         <a id="edit" href="../print.php?tab=utilizatori"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfUtilizatori.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
+
+    <hr>
 
     <form method="post" autocomplete="off" action="chart.php?tab=utilizatori" enctype="multipart/form-data">
         <select id="combo" name="data">
@@ -112,6 +118,8 @@ $stmt->execute();
         </select>
         <input name="gen" type="submit" value="Genereaza Chart">
     </form>
+
+    <hr>
 
     <input type='text' id='searchTable' placeholder='Cautare'>
 </div>

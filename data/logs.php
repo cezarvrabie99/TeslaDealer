@@ -44,6 +44,8 @@ $stmt->execute();
         <a id="edit" href="../pdf/pdfLogs.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
 
+    <hr>
+
     <form method="post" autocomplete="off" action="chart.php?tab=logs" enctype="multipart/form-data">
         <select id="combo" name="data">
             <option>Utilizatori</option>
@@ -58,6 +60,8 @@ $stmt->execute();
         </select>
         <input name="gen" type="submit" value="Genereaza Chart">
     </form>
+
+    <hr>
 
     <input type='text' id='searchTable' placeholder='Cautare'>
 </div>

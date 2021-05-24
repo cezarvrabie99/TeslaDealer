@@ -82,15 +82,22 @@ $stmt->execute();
     <input name="adauga" type="submit" value="Adauga">
 </form>
 
+    <hr>
+
     <form method="post" action="../import.php?tab=functie" enctype="multipart/form-data">
         <input type="file" name="file" accept=".xls,.xlsx">
         <input type="submit" value="Upload Excel">
     </form>
 
+    <hr>
+
     <div class="link">
         <a id="edit" href="../print.php?tab=functie"><img src="../img/excel.png" alt="Export Excel" title="Export Excel"></a>
         <a id="edit" href="../pdf/pdfFunctii.php"><img src="../img/pdf.png" alt="Export PDF" title="Export PDF"></a>
     </div>
+
+    <hr>
+
     <input type='text' id='searchTable' placeholder='Cautare'>
 </div>
 

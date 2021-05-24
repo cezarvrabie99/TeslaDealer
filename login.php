@@ -44,12 +44,11 @@ require "select.php";
                         header("location:data/piese.php");
                         break;
                     default:
-                        echo "neconfigurat";
+                        header("location:error.php?usr=neconf");
                         break;
                 }
             } else {
-                //header("location:index.php");
-                echo "noo";
+                header("location:index.php");
                 exit();
             }
         }

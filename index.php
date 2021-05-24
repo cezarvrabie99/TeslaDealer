@@ -5,8 +5,6 @@ require "header.php";
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" type="text/css" href="style/styles.css"/>
-    <meta charset="UTF-8">
     <title>Log In</title>
 </head>
 <body>
