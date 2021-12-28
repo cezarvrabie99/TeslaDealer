@@ -82,6 +82,12 @@ $().ready(function (){
         }
     })
 
+
+    /**
+     * Function that appends a new option to a DOM element
+     * @param combo
+     * @returns {(function(*): void)|*}
+     */
     function myFunction(combo) {
         return function (item) {
             $(combo).append("<option value='" + item + "'>" + item + "</option>");

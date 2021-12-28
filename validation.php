@@ -78,11 +78,19 @@ function isDateValid($date): bool
     return checkdate($month, $day, $year);
 }
 
+/** Function that checks if a name is valid
+ * @param $name
+ * @return bool
+ */
 function isNameValid($name): bool
 {
     return preg_match("/^[ A-Za-z.-]*$/",$name);
 }
 
+/** Function that checks if a phone number is valid
+ * @param $phone
+ * @return bool
+ */
 function isPhoneValid($phone): bool
 {
     return (strlen($phone) == 10 && preg_match("/^[0-9]*$/", $phone)) ||
@@ -93,6 +101,10 @@ function isEmailValid($email){
     return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
+/** Check if country code is valid
+ * @param $country
+ * @return bool
+ */
 function isCountryCodeValid($country): bool
 {
     $country = strtoupper($country);

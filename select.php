@@ -1,5 +1,9 @@
 <?php
-
+/** Function that fetches data from the database
+ * @param $query
+ * @param $type
+ * @return mixed
+ */
 function selectFrom($query, $type){
     require "connection.php";
     if (!empty($connect)) {
@@ -14,6 +18,13 @@ function selectFrom($query, $type){
         return $stm->fetchAll();
 }
 
+
+/** Function that deletes a row from the database
+ * @param $delete
+ * @param $where
+ * @param $equals
+ * @param $user
+ */
 function deleteFrom($delete, $where, $equals, $user){
     require "connection.php";
     if (!empty($connect)) {
@@ -31,6 +42,10 @@ function deleteFrom($delete, $where, $equals, $user){
     }
 }
 
+/** Function that creates a log when a users logs in or logs out
+ * @param string $user
+ * @param bool $action
+ */
 function logsConnect(string $user, bool $action){
     require "connection.php";
     if (!empty($connect)) {

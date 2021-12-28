@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="//db.onlinewebfonts.com/c/82e4b5a84ad7f6a580a088a67437369d?family=Neusa+Next+Pro+Condensed" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+<h2>JavaScript Functions</h2>
+
+<p>This example calls a function which performs a calculation, and returns the result:</p>
+
+<p id="demo"></p>
+<h1 style="text-align: center;
+font: normal normal bold 48px/60px Neusa Next Std;
+letter-spacing: 0px;
+color: #424C59;
+text-transform: uppercase;
+opacity: 1;
+width: 500px;
+height: 117px;">Welcome to iV future's blog</h1>
+
+<script>
+    function solution(A){
+        A.sort((a, b) => a - b);
+
+        if (A[0] > 1 || A[A.length - 1] < 0 || A.length === 2) return 1;
+
+        for (let i = 1; i < A.length - 1; ++i) {
+            if (A[i] > 0 && (A[i + 1] - A[i]) > 1) {
+                return A[i] + 1;
+            }
+        }
+
+        return A[A.length - 1] + 1;
+    }
+    A = [1, 2, 5];
+    document.getElementById("demo").innerHTML = solution(A);
+</script>
+
+</body>
+</html>
+
+
+
+
+
